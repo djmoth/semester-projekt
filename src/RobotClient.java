@@ -35,14 +35,18 @@ public class RobotClient {
     /**
      * Method which connects to the robot, using the parameters provided to the constructor.
      */
-    public void connect() {
+    public boolean connect() {
         try {
             connection = new Socket(hostname, port);
             out = new PrintWriter(connection.getOutputStream(), true);
+
+            return true;
         } catch (IOException ex) {
             Logger.getLogger(RobotClient.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Error connecting to robot: " + ex.getMessage());
             ex.printStackTrace();
+
+            return false;
         }
     }
 
