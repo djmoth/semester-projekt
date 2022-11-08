@@ -2,17 +2,20 @@ import org.apache.batik.parser.PathParser;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
+/**
+ * Finds path elements in the XML structure of an SVG file.
+ */
 public class SvgHandlerSAX extends DefaultHandler
 {
     private int width;
     private int height;
     private PathParser pathParser;
-    private LineParser lineParser;
+    private LineHandler lineParser;
 
     public SvgHandlerSAX (InstructionList instructions)
     {
         pathParser = new PathParser ();
-        lineParser = new LineParser (instructions);
+        lineParser = new LineHandler (instructions);
 
         pathParser.setPathHandler (lineParser);
     }

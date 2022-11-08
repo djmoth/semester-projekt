@@ -1,14 +1,24 @@
 import org.apache.batik.parser.*;
 
-public class LineParser implements PathHandler
+/**
+ * Handles straight lines passed by a PathParser
+ */
+public class LineHandler implements PathHandler
 {
     private static final float stepsPerMM = 50;
 
     private InstructionList instructions;
+    
+    private float currentX, currentY;
 
-    public LineParser (InstructionList instructions)
+    public LineHandler (InstructionList instructions)
     {
         this.instructions = instructions;
+    }
+
+    private void addPoint (float x, float y)
+    {
+        instructions.add ((int)(x * stepsPerMM), (int)(y * stepsPerMM));
     }
 
     /**
@@ -20,7 +30,9 @@ public class LineParser implements PathHandler
     @Override
     public void linetoAbs (float x, float y) throws ParseException
     {
-        instructions.add ((int)(x * stepsPerMM), (int)(y * stepsPerMM), false);
+        currentX = x;
+        currentY = y;
+        addPoint (x, y);
     }
 
     /**
@@ -32,25 +44,30 @@ public class LineParser implements PathHandler
     @Override
     public void movetoAbs (float x, float y) throws ParseException
     {
-        instructions.add ((int)(x * stepsPerMM), (int)(y * stepsPerMM), true);
+        currentX = x;
+        currentY = y;
+        addPoint (x, y);
     }
 
     @Override
     public void startPath () throws ParseException
     {
-
+        instructions.newPath ();
     }
 
     @Override
     public void endPath () throws ParseException
     {
-
+        instructions.endPath ();
     }
 
     @Override
-    public void movetoRel (float v, float v1) throws ParseException
+    public void movetoRel (float dx, float dy) throws ParseException
     {
+        currentX += dx;
+        currentY += dy;
 
+        addPoint (currentX, currentY);
     }
 
 
@@ -62,33 +79,44 @@ public class LineParser implements PathHandler
     }
 
     @Override
-    public void linetoRel (float v, float v1) throws ParseException
+    public void linetoRel (float dx, float dy) throws ParseException
     {
+        currentX += dx;
+        currentY += dy;
 
+        addPoint (currentX, currentY);
     }
 
     @Override
-    public void linetoHorizontalRel (float v) throws ParseException
+    public void linetoHorizontalRel (float dx) throws ParseException
     {
+        currentX += dx;
 
+        addPoint (currentX, currentY);
     }
 
     @Override
-    public void linetoHorizontalAbs (float v) throws ParseException
+    public void linetoHorizontalAbs (float x) throws ParseException
     {
+        currentX = x;
 
+        addPoint (currentX, currentY);
     }
 
     @Override
-    public void linetoVerticalRel (float v) throws ParseException
+    public void linetoVerticalRel (float dy) throws ParseException
     {
+        currentY += dy;
 
+        addPoint (currentX, currentY);
     }
 
     @Override
-    public void linetoVerticalAbs (float v) throws ParseException
+    public void linetoVerticalAbs (float y) throws ParseException
     {
+        currentY = y;
 
+        addPoint (currentX, currentY);
     }
 
     @Override
