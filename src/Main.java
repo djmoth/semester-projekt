@@ -31,8 +31,19 @@ public class Main
             SAXParser parser = saxFactory.newSAXParser ();
             SvgHandlerSAX handler = new SvgHandlerSAX (instructions);
 
+            // Combine last command-line arguments into a single string using StringBuilder
+            StringBuilder filePath = new StringBuilder ();
+
+            for (int i = 2; i < args.length; i++)
+            {
+                filePath.append (args[i]);
+
+                if (i < args.length - 1)
+                    filePath.append (" ");
+            }
+
             // Parse the file
-            parser.parse (args[2], handler);
+            parser.parse (filePath.toString (), handler);
         } catch (ParserConfigurationException | SAXException | IOException ex)
         {
             ex.printStackTrace ();
@@ -47,6 +58,7 @@ public class Main
         // Try to connect to the PLC
         if (!client.connect ())
         {
+            System.out.println ("Failed to connect");
             return;
         }
 
