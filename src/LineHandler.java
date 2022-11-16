@@ -6,6 +6,10 @@ import org.apache.batik.parser.*;
 public class LineHandler implements PathHandler
 {
     private static final float stepsPerMM = 25;
+    /**
+     * Start drawing 500mm from origin as to not draw inside the sharpener
+     */
+    private static final float xDrawOffset = 50;
 
     private InstructionList instructions;
 
@@ -30,7 +34,7 @@ public class LineHandler implements PathHandler
             firstY = y;
         }
 
-        instructions.add ((int)(x * stepsPerMM), (int)(y * stepsPerMM));
+        instructions.add ((int)(x * stepsPerMM + xDrawOffset), (int)(y * stepsPerMM));
     }
 
     /**
