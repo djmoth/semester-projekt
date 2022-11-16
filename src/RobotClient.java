@@ -24,7 +24,7 @@ public class RobotClient
     private DataOutputStream out;
 
     /**
-     *
+     * Create a new RobotClient
      * @param hostname Hostname of the robot
      * @param port Port of the robot
      */
@@ -64,6 +64,7 @@ public class RobotClient
         return connection.isConnected ();
     }
 
+    // Upload an InstructionList to the robot
     public void uploadInstructions (InstructionList instructions) throws IOException
     {
         if (isConnected ()) {

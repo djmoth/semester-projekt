@@ -16,11 +16,18 @@ public class InstructionList
      */
     private int length;
 
+    /**
+     * Index in the instructions array of where the pathPointCount of the current path is stored
+     */
     private int pathPointsIndex;
+    /**
+     * Number of points in the current path
+     */
     private int pathPointCount;
 
     public void newPath ()
     {
+        // Remember at which index this path starts at
         pathPointsIndex = length;
         pathPointCount = 0;
 
@@ -69,7 +76,9 @@ public class InstructionList
     }
 
     /**
-     * Write a short to an index in the instructions array
+     * Write an int as a 16-bit unsigned integer to an index in the instructions array.
+     * The value is truncated if its value is greater than 65535 or less than 0.
+     * The method does not check for overflow.
      * @param index Index in the instructions array
      * @param val signed 32-bit integer value to write as an unsigned 16-bit integer
      */
@@ -79,13 +88,21 @@ public class InstructionList
         instructions[index + 1] = (byte)((val >> 8) & 0xFF);
     }
 
+    /**
+     * Check if the instructions array has enough space for newData bytes.
+     * If not, the instructions array is doubled in size.
+     * @param newData
+     */
     private void checkCapacity (int newData)
     {
         // Resize instructions array if there is not enough space
         if (length + newData > instructions.length)
         {
-            // Double the size of the array
-            instructions = Arrays.copyOf (instructions, instructions.length * 2);
+            // Calculate the new size, which is either double the current size
+            // or the current size + newData, whichever is greatest.
+            int newSize = Math.max (instructions.length * 2, instructions.length + newData);
+            // Resize of the array by making a copy with a length of newSize
+            instructions = Arrays.copyOf (instructions, newSize);
         }
     }
 }
